@@ -31,7 +31,7 @@ app.appendChild(toolbar);
 createSensitivitySlider(app);
 
 const logo = document.createElement('img');
-logo.src = '/sulamstar.svg';
+logo.src = `${import.meta.env.BASE_URL}sulamstar.svg`;
 logo.style.cssText = 'position:absolute;right:26px;width:52px;height:auto;z-index:100;pointer-events:none;filter:brightness(0);opacity:0.82;';
 app.appendChild(logo);
 
