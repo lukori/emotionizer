@@ -1,0 +1,378 @@
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Patrick Hand', cursive;
+  background: #1a1a1a;
+}
+
+#app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%) rotate(-0.4deg);
+  z-index: 10;
+  background: #fefcf7;
+  border: 2.5px solid #1a1a1a;
+  border-radius: 16px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 140px;
+  box-shadow: 4px 4px 0 #1a1a1a;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #666;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.toolbar-divider {
+  height: 1.5px;
+  background: #e0ddd4;
+  border-radius: 2px;
+  margin: 2px 0;
+}
+
+/* ── Brush picker ── */
+.brush-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brush-btn-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brush-btn {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 13px;
+  padding: 5px 8px;
+  border: 2px solid #1a1a1a;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.brush-btn:hover {
+  background: #f0eee8;
+}
+
+.brush-btn.active {
+  background: #1a1a1a;
+  color: #fefcf7;
+}
+
+/* ── Size picker ── */
+.size-picker {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.size-btn {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 11px;
+  padding: 3px 6px;
+  border: 1.5px solid #aaa;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  color: #333;
+  line-height: 1;
+}
+
+.size-btn:hover {
+  background: #f0eee8;
+  border-color: #1a1a1a;
+}
+
+.size-btn.active {
+  background: #1a1a1a;
+  color: #fefcf7;
+  border-color: #1a1a1a;
+}
+
+/* ── Swatches (palette + bg) ── */
+.swatch-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  position: relative;
+  transition: transform 0.1s;
+}
+
+.swatch:hover {
+  transform: scale(1.15);
+}
+
+.swatch.active {
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 2px #fefcf7, 0 0 0 4px #1a1a1a;
+}
+
+.swatch-custom {
+  background: linear-gradient(135deg, #f7c52d, #e23838, #2a8cd9, #7fbf4a);
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: 'Patrick Hand', cursive;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #1a1a1a;
+}
+
+.color-input-hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Palette section ── */
+.palette {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── BG picker ── */
+.bg-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── Toolbar mode sections ── */
+.paint-section,
+.animate-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Action button cluster ── */
+.action-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.action-row {
+  display: flex;
+  gap: 6px;
+}
+
+/* ── Animate button ── */
+.animate-btn {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 18px;
+  padding: 7px 0;
+  border: 2.5px solid #2a8cd9;
+  border-radius: 10px;
+  background: #2a8cd9;
+  color: #fff;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: background 0.12s, border-color 0.12s;
+  line-height: 1;
+}
+
+.animate-btn:hover {
+  background: #1a6fb5;
+  border-color: #1a6fb5;
+}
+
+/* ── Stop button ── */
+.stop-btn {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 2.5px solid #e23838;
+  border-radius: 10px;
+  background: #e23838;
+  color: #fff;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: background 0.12s;
+}
+
+.stop-btn:hover {
+  background: #c02020;
+  border-color: #c02020;
+}
+
+/* ── Detection toast ── */
+.detect-toast {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: #1a1a1a;
+  color: #fefcf7;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 15px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.detect-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Undo / Clear icon buttons ── */
+.undo-btn,
+.clear-btn {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 17px;
+  padding: 0;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  flex: 1;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.12s, color 0.12s;
+}
+
+.undo-btn {
+  border: 2.5px solid #1a1a1a;
+  color: #1a1a1a;
+}
+
+.undo-btn:hover {
+  background: #1a1a1a;
+  color: #fefcf7;
+}
+
+.clear-btn {
+  border: 2.5px solid #e23838;
+  color: #e23838;
+}
+
+.clear-btn:hover {
+  background: #e23838;
+  color: #fff;
+}
+
+/* ── Sensitivity lever ── */
+.sensitivity-slider {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  opacity: 0.25;
+  transition: opacity 0.2s;
+}
+
+.sensitivity-slider:hover {
+  opacity: 0.85;
+}
+
+.sensitivity-track {
+  height: 110px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sensitivity-range {
+  appearance: none;
+  width: 110px;
+  height: 4px;
+  background: #888;
+  border-radius: 2px;
+  transform: rotate(-90deg);
+  cursor: pointer;
+  outline: none;
+}
+
+.sensitivity-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #444;
+  cursor: pointer;
+  border: 2px solid #fefcf7;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.sensitivity-range::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #444;
+  cursor: pointer;
+  border: 2px solid #fefcf7;
+}

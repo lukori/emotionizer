@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "emotionizer",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "4242"],
+      "name": "doodle-animator",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "4242"],
       "port": 4242
     }
   ]

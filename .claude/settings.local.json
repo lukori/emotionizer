@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(find /Users/lukasmac/Desktop/claude_projects/emotionizer -name \"*.svg\" 2>/dev/null | head -20)",
+      "Bash(mkdir -p /Users/lukasmac/Desktop/claude_projects/emotionizer/.claude/worktrees/xenodochial-noyce-1386ca/src/assets && cp /Users/lukasmac/Desktop/claude_projects/emotionizer/mouth0*.svg /Users/lukasmac/Desktop/claude_projects/emotionizer/.claude/worktrees/xenodochial-noyce-1386ca/src/assets/)",
+      "Bash(npx tsc *)",
+      "Bash(xargs ls)",
+      "Bash(mkdir -p /Users/lukasmac/Desktop/claude_projects/emotionizer/.claude/worktrees/xenodochial-noyce-1386ca/public && cp /Users/lukasmac/Downloads/sulamstar.svg /Users/lukasmac/Desktop/claude_projects/emotionizer/.claude/worktrees/xenodochial-noyce-1386ca/public/sulamstar.svg)"
     ]
   }
 }
