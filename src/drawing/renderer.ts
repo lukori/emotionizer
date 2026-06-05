@@ -115,7 +115,8 @@ export function render(ctx: CanvasRenderingContext2D, time: number): void {
   let xFactor = 1, yFactor = 1;
   let faceShiftX = 0, faceShiftY = 0; // extra slide when features hit the wall
   let bodyShiftX = 0, bodyShiftY = 0; // body follow (slow) + wall slide
-  let hairBehindDropY = 0; // extra downward shift for hair-behind-face past halfway-up
+  let hairBehindActive = false; // hair moves behind face (past halfway-up)
+  let hairBehindDropY = 0; // extra downward shift for hair behind face (past 3/4-up)
   let faceBounds: { x: number; y: number; w: number; h: number } | null = null;
   // outer stroke id → { inner stroke, eye radius, eye center }
   const puppetOuterMap = new Map<string, { inner: Stroke | null; radius: number; center: { x: number; y: number } }>();
@@ -210,11 +211,13 @@ export function render(ctx: CanvasRenderingContext2D, time: number): void {
     bodyShiftX = pdx * BODY_FOLLOW_SCALE + faceShiftX;
     bodyShiftY = pdy * BODY_FOLLOW_SCALE + faceShiftY;
 
-    // Past halfway-up, drop hair down (it's already drawn behind the face blob in pass 1b)
-    // so the back of the head visually sinks behind — enhances the 3D tilt-back illusion.
-    const halfU = mU / 2;
-    if (pdy < -halfU) {
-      const t = Math.min(1, (-pdy - halfU) / halfU);
+    // Phase 1: past halfway-up, hair starts rendering behind the face blob.
+    hairBehindActive = pdy < -mU / 2;
+    // Phase 2: past 3/4-up, hair (already behind face) also slides down — back of head sinks.
+    const dropStart = (mU * 3) / 4;
+    if (pdy < -dropStart) {
+      const remaining = mU - dropStart; // mU/4
+      const t = Math.min(1, (-pdy - dropStart) / remaining);
       hairBehindDropY = t * mU * HAIR_BEHIND_DROP_MAX;
     } else {
       hairBehindDropY = 0;
@@ -237,9 +240,9 @@ export function render(ctx: CanvasRenderingContext2D, time: number): void {
     }
   }
 
-  // Pass 1b (animate + cursor up): hair behind face — render hair before the face blob
-  // so the face blob naturally covers the hair, giving a 3D "looking up" illusion.
-  if (inAnimate && pdy < 0) {
+  // Pass 1b (animate + cursor past halfway-up): hair behind face — render hair before the
+  // face blob so the face blob naturally covers the hair, giving a 3D "looking up" illusion.
+  if (inAnimate && hairBehindActive) {
     for (const stroke of state.strokes) {
       if (stroke.type !== 'hair') continue;
       if (backgroundStrokeIds.has(stroke.id)) continue;
@@ -265,7 +268,7 @@ export function render(ctx: CanvasRenderingContext2D, time: number): void {
     if (inAnimate && stroke.type === 'mouth') continue;
     if (inAnimate && stroke.type === 'nose') continue; // drawn after mouth frame
     if (inAnimate && stroke.type === 'hands') continue; // drawn after nose
-    if (inAnimate && stroke.type === 'hair' && pdy < 0) continue; // drawn behind face in pass 1b
+    if (inAnimate && stroke.type === 'hair' && hairBehindActive) continue; // drawn behind face in pass 1b
 
     if (inAnimate && stroke.type === 'eye') {
       if (puppetInnerIds.has(stroke.id)) continue; // rendered clipped inside its outer
