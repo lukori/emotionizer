@@ -11,7 +11,18 @@
       "Bash(mkdir -p /Users/lukasmac/Desktop/claude_projects/emotionizer/.claude/worktrees/xenodochial-noyce-1386ca/src/assets && cp /Users/lukasmac/Desktop/claude_projects/emotionizer/mouth0*.svg /Users/lukasmac/Desktop/claude_projects/emotionizer/.claude/worktrees/xenodochial-noyce-1386ca/src/assets/)",
       "Bash(npx tsc *)",
       "Bash(xargs ls)",
-      "Bash(mkdir -p /Users/lukasmac/Desktop/claude_projects/emotionizer/.claude/worktrees/xenodochial-noyce-1386ca/public && cp /Users/lukasmac/Downloads/sulamstar.svg /Users/lukasmac/Desktop/claude_projects/emotionizer/.claude/worktrees/xenodochial-noyce-1386ca/public/sulamstar.svg)"
+      "Bash(mkdir -p /Users/lukasmac/Desktop/claude_projects/emotionizer/.claude/worktrees/xenodochial-noyce-1386ca/public && cp /Users/lukasmac/Downloads/sulamstar.svg /Users/lukasmac/Desktop/claude_projects/emotionizer/.claude/worktrees/xenodochial-noyce-1386ca/public/sulamstar.svg)",
+      "Bash(npx vite *)",
+      "Read(//Users/lukasmac/Desktop/claude_projects/emboss/**)",
+      "Bash(git -C /Users/lukasmac/Desktop/claude_projects/emboss remote -v)",
+      "Bash(git -C /Users/lukasmac/Desktop/claude_projects/emboss/embosser-maker remote -v)",
+      "Bash(gh repo *)",
+      "Bash(gh api *)",
+      "Read(//private/tmp/**)",
+      "Bash(unzip -o \"/Users/lukasmac/Desktop/claude_projects/emotionizer/emotionizer_github_sync_notes.docx\" \"word/document.xml\" -d docx_extract)",
+      "Read(//tmp/docx_extract/word/**)",
+      "Bash(mkdir -p \"/Users/lukasmac/Library/Application Support/Claude/claude-skills/simple-sync-to-github\")",
+      "Bash(ls \"/Users/lukasmac/Library/Application Support/Claude/\" | grep -i skill)"
     ]
   }
 }
