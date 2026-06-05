@@ -222,6 +222,19 @@ export function render(ctx: CanvasRenderingContext2D, time: number): void {
     }
   }
 
+  // Pass 1b (animate + cursor up): hair behind face — render hair before the face blob
+  // so the face blob naturally covers the hair, giving a 3D "looking up" illusion.
+  if (inAnimate && pdy < 0) {
+    for (const stroke of state.strokes) {
+      if (stroke.type !== 'hair') continue;
+      if (backgroundStrokeIds.has(stroke.id)) continue;
+      ctx.save();
+      ctx.translate(bodyShiftX, bodyShiftY);
+      renderWobbled(ctx, stroke, time);
+      ctx.restore();
+    }
+  }
+
   if (fillLayer) {
     if (bodyShiftX !== 0 || bodyShiftY !== 0) {
       ctx.save();
@@ -237,6 +250,7 @@ export function render(ctx: CanvasRenderingContext2D, time: number): void {
     if (inAnimate && stroke.type === 'mouth') continue;
     if (inAnimate && stroke.type === 'nose') continue; // drawn after mouth frame
     if (inAnimate && stroke.type === 'hands') continue; // drawn after nose
+    if (inAnimate && stroke.type === 'hair' && pdy < 0) continue; // drawn behind face in pass 1b
 
     if (inAnimate && stroke.type === 'eye') {
       if (puppetInnerIds.has(stroke.id)) continue; // rendered clipped inside its outer
