@@ -38,6 +38,10 @@ const PUPPET_SCALE = 0.38;
 const PERSPECTIVE_COMPRESS = 0.45;
 // Body (face blob + fill) follows cursor at this fraction of feature speed — parallax feel.
 const BODY_FOLLOW_SCALE = 0.28;
+// When looking up past halfway, hair (rendered behind the face blob) slides down
+// by up to this fraction of the upward travel — fakes the back of the head sinking
+// behind the face for a stronger 3D tilt.
+const HAIR_BEHIND_DROP_MAX = 0.4;
 
 export function setActiveStrokeGetter(fn: () => Stroke | null): void {
   getActiveStroke = fn;
@@ -111,6 +115,7 @@ export function render(ctx: CanvasRenderingContext2D, time: number): void {
   let xFactor = 1, yFactor = 1;
   let faceShiftX = 0, faceShiftY = 0; // extra slide when features hit the wall
   let bodyShiftX = 0, bodyShiftY = 0; // body follow (slow) + wall slide
+  let hairBehindDropY = 0; // extra downward shift for hair-behind-face past halfway-up
   let faceBounds: { x: number; y: number; w: number; h: number } | null = null;
   // outer stroke id → { inner stroke, eye radius, eye center }
   const puppetOuterMap = new Map<string, { inner: Stroke | null; radius: number; center: { x: number; y: number } }>();
@@ -205,6 +210,16 @@ export function render(ctx: CanvasRenderingContext2D, time: number): void {
     bodyShiftX = pdx * BODY_FOLLOW_SCALE + faceShiftX;
     bodyShiftY = pdy * BODY_FOLLOW_SCALE + faceShiftY;
 
+    // Past halfway-up, drop hair down (it's already drawn behind the face blob in pass 1b)
+    // so the back of the head visually sinks behind — enhances the 3D tilt-back illusion.
+    const halfU = mU / 2;
+    if (pdy < -halfU) {
+      const t = Math.min(1, (-pdy - halfU) / halfU);
+      hairBehindDropY = t * mU * HAIR_BEHIND_DROP_MAX;
+    } else {
+      hairBehindDropY = 0;
+    }
+
     // Normalize each axis by its own directional limit so compression always
     // reaches PERSPECTIVE_COMPRESS at the face-blob edge regardless of face shape.
     // Cap at 150 px so the effect is strong on large canvases too.
@@ -229,7 +244,7 @@ export function render(ctx: CanvasRenderingContext2D, time: number): void {
       if (stroke.type !== 'hair') continue;
       if (backgroundStrokeIds.has(stroke.id)) continue;
       ctx.save();
-      ctx.translate(bodyShiftX, bodyShiftY);
+      ctx.translate(bodyShiftX, bodyShiftY + hairBehindDropY);
       renderWobbled(ctx, stroke, time);
       ctx.restore();
     }
